@@ -19,6 +19,7 @@
 *.slnx
 *.user
 *.userprefs
+.vsconfig
 
 # OS files
 .DS_Store
