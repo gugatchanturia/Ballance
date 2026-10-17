@@ -33,6 +33,7 @@ public class GravityGrid : MonoBehaviour
     private Vector3[] deformedVertices;
 
     private BlackHole[] blackHoles;
+    private SolarSystem3D[] solarSystems;
 
     void Start()
     {
@@ -47,6 +48,9 @@ public class GravityGrid : MonoBehaviour
 
         blackHoles = transform.parent
             .GetComponentsInChildren<BlackHole>();
+
+        solarSystems = transform.parent
+            .GetComponentsInChildren<SolarSystem3D>();
 
         GenerateSurface();
         GenerateGridTexture();
@@ -181,6 +185,33 @@ public class GravityGrid : MonoBehaviour
                 );
 
                 totalDepth += depth * proximity * proximity;
+            }
+
+            // A broad, shallow SOLAR well. It changes the same mesh
+            // used later by the physical MeshCollider.
+            foreach (SolarSystem3D solar in solarSystems)
+            {
+                if (solar == null || !solar.isActiveAndEnabled)
+                    continue;
+
+                Vector3 sunPosition = transform.InverseTransformPoint(
+                    solar.transform.position
+                );
+
+                float dx = vertex.x - sunPosition.x;
+                float dz = vertex.z - sunPosition.z;
+                float radius = Mathf.Max(0.01f, solar.meshGravityRadius);
+                float distance = Mathf.Sqrt(dx * dx + dz * dz);
+
+                if (distance >= radius)
+                    continue;
+
+                float proximity = 1f - distance / radius;
+                // Smooth falloff, zero slope at the edge AND center.
+                float smooth = proximity * proximity *
+                    (3f - 2f * proximity);
+
+                totalDepth += Mathf.Max(0f, solar.meshGravityDepth) * smooth;
             }
 
             vertex.y -= totalDepth;

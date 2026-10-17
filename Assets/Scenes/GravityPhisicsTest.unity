@@ -286,6 +286,7 @@ GameObject:
   m_Component:
   - component: {fileID: 582893756}
   - component: {fileID: 582893757}
+  - component: {fileID: 582893758}
   m_Layer: 0
   m_Name: BlackHole
   m_TagString: Untagged
@@ -327,6 +328,85 @@ MonoBehaviour:
   captureRadius: 0.2
   swallowDuration: 0.7
   swallowDepth: 1.6
+--- !u!114 &582893758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582893755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f009ecde245aa04886dd7a9ebc9985e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlackHoleAccretion
+  accretionMaterial: {fileID: 2100000, guid: 50f688ba9536070409a898522274f4be, type: 2}
+  diskWidth: 1.1
+  surfaceOffset: 0.07
+  hotColor: {r: 1, g: 0.88, b: 0.42, a: 1}
+  warmColor: {r: 1, g: 0.43, b: 0.08, a: 1}
+  dimColor: {r: 0.55, g: 0.12, b: 0.025, a: 1}
+  orbitSpeed: 1
+  angularSegments: 128
+  radialSegments: 8
+--- !u!1 &690915564
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 690915565}
+  - component: {fileID: 690915566}
+  m_Layer: 0
+  m_Name: SolarSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &690915565
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690915564}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2, y: 0.65, z: 6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1651355783}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &690915566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690915564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 078fd47b4acdcd049937fdb5b1968b8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SolarSystem3D
+  earth: {fileID: 1395611023}
+  fieldController: {fileID: 497122502}
+  sunRadius: 0.5
+  winRadius: 0.8
+  lightIntensity: 3
+  lightRange: 5
+  innerOrbitRadius: 1
+  innerPlanetRadius: 0.15
+  innerOrbitSpeed: 65
+  outerOrbitRadius: 1.65
+  outerPlanetRadius: 0.22
+  outerOrbitSpeed: 35
+  orbitSegments: 128
+  orbitLineWidth: 0.025
 --- !u!1 &996709854
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,7 +732,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.083333, y: 5, z: 0.055556}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 690915565}
   m_Father: {fileID: 497122501}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1651355784
@@ -749,7 +830,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CurvedFieldPhysicsTest
   blackHole: {fileID: 582893757}
   flatFieldCollider: {fileID: 497122498}
-  openingRadius: 0.45
+  openingRadius: 0.7
+--- !u!1 &1903522631
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1903522633}
+  - component: {fileID: 1903522632}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1903522632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903522631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a9c40f5067a382468366a1ca9f30896, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager3D
+  earth: {fileID: 1395611023}
+  gravityField: {fileID: 497122501}
+  fieldController: {fileID: 497122502}
+  fallDistance: 3
+--- !u!4 &1903522633
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903522631}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1938061016
 GameObject:
   m_ObjectHideFlags: 0
@@ -975,3 +1104,4 @@ SceneRoots:
   - {fileID: 497122501}
   - {fileID: 1395611027}
   - {fileID: 2119462302}
+  - {fileID: 1903522633}
