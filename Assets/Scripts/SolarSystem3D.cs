@@ -301,6 +301,20 @@ public class SolarSystem3D : MonoBehaviour
             new Color(0.1f, 0.65f, 1f)
         );
 
+        // Reuse the actual player's globe material, including its continents.
+        // The original Earth's MeshRenderer remains available even after
+        // the player object is deactivated at the end of absorption.
+        MeshRenderer originalEarthRenderer = earth != null
+            ? earth.GetComponent<MeshRenderer>()
+            : null;
+
+        if (originalEarthRenderer != null &&
+            originalEarthRenderer.sharedMaterial != null)
+        {
+            victoryEarthPlanet.GetComponent<MeshRenderer>().sharedMaterial =
+                originalEarthRenderer.sharedMaterial;
+        }
+
         // Place it immediately on its new orbit.
         victoryEarthAngle = 245f;
         victoryEarthPlanet.localPosition = new Vector3(

@@ -359,6 +359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 690915565}
   - component: {fileID: 690915566}
+  - component: {fileID: 690915567}
   m_Layer: 0
   m_Name: SolarSystem
   m_TagString: Untagged
@@ -395,18 +396,136 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SolarSystem3D
   earth: {fileID: 1395611023}
   fieldController: {fileID: 497122502}
-  sunRadius: 0.5
-  winRadius: 0.8
+  sunRadius: 0.9
+  winRadius: 1.1
   lightIntensity: 3
   lightRange: 5
-  innerOrbitRadius: 1
-  innerPlanetRadius: 0.15
+  gravityRadius: 4
+  gravityStrength: 6
+  maximumGravity: 12
+  meshGravityRadius: 3
+  meshGravityDepth: 0.65
+  earthOrbitRadius: 2
+  earthPlanetRadius: 0.18
+  earthOrbitSpeed: 35
+  absorptionDuration: 2.5
+  absorptionOrbits: 2.5
+  innerOrbitRadius: 1.35
+  innerPlanetRadius: 0.12
   innerOrbitSpeed: 65
-  outerOrbitRadius: 1.65
-  outerPlanetRadius: 0.22
-  outerOrbitSpeed: 35
-  orbitSegments: 128
-  orbitLineWidth: 0.025
+  outerOrbitRadius: 1.72
+  outerPlanetRadius: 0.16
+  outerOrbitSpeed: 48
+  orbitSegments: 256
+  orbitLineWidth: 0.02
+--- !u!114 &690915567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690915564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f190fbe3bbcf1774c9c8defcd50e3eaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SolarAppearance3D
+  sunSpin: 5
+  mercurySpin: 22
+  venusSpin: -12
+  coronaSizeMultiplier: 1.8
+  coronaOpacity: 0.55
+  textureWidth: 512
+--- !u!1 &712974228
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 712974229}
+  - component: {fileID: 712974231}
+  - component: {fileID: 712974230}
+  m_Layer: 0
+  m_Name: AtmoSphere
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &712974229
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712974228}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.12, y: 1.12, z: 1.12}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1395611027}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &712974230
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712974228}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 81d3d035b6bd58b47b3ef53942ef25d7, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &712974231
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712974228}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &996709854
 GameObject:
   m_ObjectHideFlags: 0
@@ -419,6 +538,7 @@ GameObject:
   - component: {fileID: 996709856}
   - component: {fileID: 996709855}
   - component: {fileID: 996709858}
+  - component: {fileID: 996709859}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -544,6 +664,22 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &996709859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996709854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1feaaa5bbb7638f4aa32c62df47fbbcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpaceBackground
+  starCount: 1400
+  starBrightness: 0.75
+  backgroundBrightness: 0.25
+  seed: 583
 --- !u!1 &1395611022
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,6 +694,7 @@ GameObject:
   - component: {fileID: 1395611024}
   - component: {fileID: 1395611023}
   - component: {fileID: 1395611028}
+  - component: {fileID: 1395611029}
   m_Layer: 0
   m_Name: Earth
   m_TagString: Untagged
@@ -680,9 +817,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.6, z: -8}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 712974229}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1395611028
@@ -692,7 +830,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1395611022}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c65ebae5324fa874da2e3a9ef5576985, type: 3}
   m_Name: 
@@ -700,6 +838,19 @@ MonoBehaviour:
   maxAcceleration: 10
   smoothing: 8
   meterSize: 120
+--- !u!114 &1395611029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395611022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40bfe14ec57053f4f9fcc645a6655bac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EarthVisualRotation
+  degreesPerSecond: 8
 --- !u!1 &1651355782
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,9 +907,9 @@ MonoBehaviour:
   meshRows: 96
   gridMaterial: {fileID: 2100000, guid: c02a64b2e51422e458b43b1557534846, type: 2}
   height: 0.13
-  lineWidth: 0.025
-  surfaceColor: {r: 0.14509805, g: 0.21960784, b: 0.34509805, a: 1}
-  lineColor: {r: 1, g: 0.7186904, b: 0.2924527, a: 1}
+  lineWidth: 0.02
+  surfaceColor: {r: 0.105882354, g: 0.16078432, b: 0.26666668, a: 1}
+  lineColor: {r: 0.72156864, g: 0.54509807, b: 0.3137255, a: 1}
 --- !u!23 &1651355785
 MeshRenderer:
   m_ObjectHideFlags: 0
