@@ -11,31 +11,43 @@ public class CurvedFieldPhysicsTest : MonoBehaviour
     public BoxCollider flatFieldCollider;
 
     [Header("Opening")]
-    public float openingRadius = 0.45f;
+    public float openingRadius = 0.7f;
 
     private Mesh collisionMesh;
     private MeshCollider curvedCollider;
 
-    IEnumerator Start()
+    private IEnumerator Start()
     {
-        // Allow GravityGrid to generate and deform its mesh.
+        // Wait for GravityGrid to generate and deform
+        // its surface around every black hole.
         yield return null;
 
         MeshFilter filter = GetComponent<MeshFilter>();
 
         if (filter.sharedMesh == null ||
-            blackHole == null ||
             flatFieldCollider == null)
         {
             Debug.LogError(
-                "CurvedFieldPhysicsTest: Missing reference or grid mesh.",
+                "CurvedFieldPhysicsTest: Missing grid mesh or flat collider.",
                 this
             );
             yield break;
         }
 
-        // Work on a separate mesh so the original
-        // GravityGrid mesh remains untouched.
+        // Find every black hole belonging to this field.
+        BlackHole[] blackHoles =
+            transform.parent.GetComponentsInChildren<BlackHole>();
+
+        if (blackHoles.Length == 0)
+        {
+            Debug.LogError(
+                "CurvedFieldPhysicsTest: No black holes found.",
+                this
+            );
+            yield break;
+        }
+
+        // Copy the already-deformed surface.
         collisionMesh = Instantiate(filter.sharedMesh);
         collisionMesh.name = "Physical Gravity Surface";
 
@@ -44,63 +56,98 @@ public class CurvedFieldPhysicsTest : MonoBehaviour
 
         List<int> remainingTriangles = new List<int>();
 
-        Vector3 holeCenter = transform.InverseTransformPoint(
-            blackHole.transform.position
-        );
+        Vector3[] holeCenters =
+            new Vector3[blackHoles.Length];
 
-        float radiusSquared = openingRadius * openingRadius;
+        for (int i = 0; i < blackHoles.Length; i++)
+        {
+            holeCenters[i] =
+                transform.InverseTransformPoint(
+                    blackHoles[i].transform.position
+                );
+        }
 
-        // The grid was built as pairs of triangles forming quads.
-        // Remove entire quads near the black hole's center.
+        float radiusSquared =
+            openingRadius * openingRadius;
+
+        // Each group of six indices forms one grid quad.
         for (int i = 0; i < originalTriangles.Length; i += 6)
         {
             int a = originalTriangles[i];
             int d = originalTriangles[i + 2];
 
-            Vector3 center = (vertices[a] + vertices[d]) * 0.5f;
+            Vector3 center =
+                (vertices[a] + vertices[d]) * 0.5f;
 
-            float dx = center.x - holeCenter.x;
-            float dz = center.z - holeCenter.z;
+            bool insideOpening = false;
 
-            float distanceSquared = dx * dx + dz * dz;
+            // Remove this quad if it belongs to ANY
+            // black-hole opening.
+            foreach (Vector3 holeCenter in holeCenters)
+            {
+                float dx = center.x - holeCenter.x;
+                float dz = center.z - holeCenter.z;
 
-            if (distanceSquared < radiusSquared)
+                float distanceSquared =
+                    dx * dx + dz * dz;
+
+                if (distanceSquared < radiusSquared)
+                {
+                    insideOpening = true;
+                    break;
+                }
+            }
+
+            if (insideOpening)
                 continue;
 
             for (int j = 0; j < 6; j++)
-                remainingTriangles.Add(originalTriangles[i + j]);
+            {
+                remainingTriangles.Add(
+                    originalTriangles[i + j]
+                );
+            }
         }
 
         collisionMesh.SetTriangles(remainingTriangles, 0);
         collisionMesh.RecalculateBounds();
 
-        // Use the same geometry for visuals and collisions.
+        // Both rendering and collision use the
+        // same surface geometry.
         filter.sharedMesh = collisionMesh;
 
         curvedCollider = GetComponent<MeshCollider>();
 
         if (curvedCollider == null)
-            curvedCollider = gameObject.AddComponent<MeshCollider>();
+        {
+            curvedCollider =
+                gameObject.AddComponent<MeshCollider>();
+        }
 
         curvedCollider.convex = false;
+        curvedCollider.sharedMesh = null;
         curvedCollider.sharedMesh = collisionMesh;
 
-        // The curved surface replaces the flat collider.
         flatFieldCollider.enabled = false;
 
-        // Disable scripted black-hole forces and capture
-        // AFTER GravityGrid has generated its deformation.
-        blackHole.enabled = false;
+        // Physics controls the falling, not scripted
+        // black-hole attraction or capture.
+        foreach (BlackHole hole in blackHoles)
+        {
+            hole.enabled = false;
+        }
 
         Debug.Log(
-            "PHYSICS TEST: Curved collision surface active. " +
-            "Black-hole scripted forces disabled."
+            "PHYSICS TEST: " + blackHoles.Length +
+            " physical black-hole openings created."
         );
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         if (collisionMesh != null)
+        {
             Destroy(collisionMesh);
+        }
     }
 }
