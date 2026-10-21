@@ -184,7 +184,7 @@ public class SolarSystem3D : MonoBehaviour
             FindFirstObjectByType<GameManager3D>();
 
         if (gameManager != null)
-            gameManager.enabled = false;
+            gameManager.BeginVictorySequence();
 
         if (fieldController != null)
             fieldController.enabled = false;
@@ -277,12 +277,11 @@ public class SolarSystem3D : MonoBehaviour
 
         earth.gameObject.SetActive(false);
 
-        // The player's Earth joins the display as planet number three.
-        // Only create it AFTER absorption finishes.
-        CreateVictoryEarth();
-
         hasWon = true;
         absorbingEarth = false;
+
+        if (gameManager != null)
+            gameManager.CompleteVictory();
 
         Debug.Log("YOU WIN! Earth was absorbed by the Sun.");
     }
@@ -473,46 +472,5 @@ public class SolarSystem3D : MonoBehaviour
         material.color = color;
 
         return material;
-    }
-
-    private void OnGUI()
-    {
-        if (!hasWon)
-            return;
-
-        float width = 280f;
-        float height = 180f;
-
-        Rect panel = new Rect(
-            (Screen.width - width) / 2f,
-            (Screen.height - height) / 2f,
-            width,
-            height
-        );
-
-        GUI.Box(panel, "");
-
-        GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-
-        titleStyle.fontSize = 30;
-        titleStyle.fontStyle = FontStyle.Bold;
-        titleStyle.alignment = TextAnchor.MiddleCenter;
-        titleStyle.normal.textColor = Color.yellow;
-
-        GUI.Label(
-            new Rect(panel.x, panel.y + 25f, width, 50f),
-            "YOU WIN!",
-            titleStyle
-        );
-
-        if (GUI.Button(
-            new Rect(panel.x + 55f, panel.y + 105f, 170f, 45f),
-            "RESTART"
-        ))
-        {
-            SceneManager.LoadScene(
-                SceneManager.GetActiveScene().name
-            );
-        }
     }
 }
