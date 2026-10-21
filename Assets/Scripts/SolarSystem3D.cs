@@ -280,6 +280,19 @@ public class SolarSystem3D : MonoBehaviour
         hasWon = true;
         absorbingEarth = false;
 
+        CreateVictoryEarth();
+
+        Camera mainCamera = Camera.main;
+
+        if (mainCamera != null)
+        {
+            VictoryCamera3D victoryCamera =
+                mainCamera.GetComponent<VictoryCamera3D>();
+
+            if (victoryCamera != null)
+                victoryCamera.StartVictoryFocus(transform);
+        }
+
         if (gameManager != null)
             gameManager.CompleteVictory();
 

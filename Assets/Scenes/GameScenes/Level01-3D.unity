@@ -632,6 +632,7 @@ GameObject:
   - component: {fileID: 996709855}
   - component: {fileID: 996709858}
   - component: {fileID: 996709859}
+  - component: {fileID: 996709860}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -773,6 +774,21 @@ MonoBehaviour:
   starBrightness: 0.75
   backgroundBrightness: 0.25
   seed: 583
+--- !u!114 &996709860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996709854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68f93dac79f8e174493f42eb48f802c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VictoryCamera3D
+  zoomDuration: 2.5
+  finalDistance: 10
+  focusHeight: 0
 --- !u!1 &1395611022
 GameObject:
   m_ObjectHideFlags: 0
