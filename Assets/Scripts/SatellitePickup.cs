@@ -81,6 +81,11 @@ public class SatellitePickup : MonoBehaviour
         visualRoot.localScale *= 0.45f;
 
         collector.Collect(this);
+
+        GameAudio3D audio = collector.GetComponent<GameAudio3D>();
+
+        if (audio != null)
+            audio.PlayPickup();
     }
 
     private void CreateSatelliteVisual()

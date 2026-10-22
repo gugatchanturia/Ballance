@@ -1,4 +1,5 @@
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,6 +14,13 @@ public class GameManager3D : MonoBehaviour
     [Header("Fall Detection")]
     public float fallDistance = 3f;
 
+    [Tooltip("Horizontal distance used to identify black-hole deaths.")]
+    public float blackHoleDetectionRadius = 2.5f;
+
+    [Header("Death Audio Timing")]
+    [Range(0f, 1f)]
+    public float blackHoleSoundDelayMultiplier = 0.5f;
+
     [Header("Level Progression")]
     [Tooltip("Exact scene name. Leave empty for the final level.")]
     public string nextSceneName = "";
@@ -21,10 +29,26 @@ public class GameManager3D : MonoBehaviour
     private bool victorySequenceStarted;
     private bool levelComplete;
 
+    private bool showGameOver;
+    private bool showVictory;
+    private bool transitioning;
+
+    private GameAudio3D gameAudio;
+    private BlackHole[] blackHoles;
+
     private GUIStyle titleStyle;
     private GUIStyle textStyle;
     private GUIStyle starStyle;
     private GUIStyle buttonStyle;
+
+    private void Start()
+    {
+        gameAudio = GetComponent<GameAudio3D>();
+
+        blackHoles = gravityField != null
+            ? gravityField.GetComponentsInChildren<BlackHole>()
+            : new BlackHole[0];
+    }
 
     private void Update()
     {
@@ -33,25 +57,19 @@ public class GameManager3D : MonoBehaviour
             gravityField == null)
             return;
 
-        // Detect falling below the tilted field.
         Vector3 localEarth =
-            gravityField.InverseTransformPoint(
-                earth.position
-            );
+            gravityField.InverseTransformPoint(earth.position);
 
         float localFallThreshold =
             0.5f - fallDistance / gravityField.lossyScale.y;
 
         if (localEarth.y < localFallThreshold)
-        {
             TriggerGameOver();
-        }
     }
 
     private void TriggerGameOver()
     {
-        if (gameOver || levelComplete ||
-            victorySequenceStarted)
+        if (gameOver || levelComplete || victorySequenceStarted)
             return;
 
         gameOver = true;
@@ -59,12 +77,82 @@ public class GameManager3D : MonoBehaviour
         if (fieldController != null)
             fieldController.enabled = false;
 
-        Debug.Log("GAME OVER: Earth fell off the gravity field!");
+        bool fellIntoBlackHole = false;
+
+        if (earth != null && gravityField != null &&
+            blackHoles != null)
+        {
+            Vector3 earthLocal =
+                gravityField.InverseTransformPoint(earth.position);
+
+            foreach (BlackHole hole in blackHoles)
+            {
+                if (hole == null)
+                    continue;
+
+                Vector3 holeLocal =
+                    gravityField.InverseTransformPoint(
+                        hole.transform.position);
+
+                Vector3 offset = earthLocal - holeLocal;
+                offset.y = 0f;
+
+                // Convert horizontal offset to world-space distance.
+                float distance =
+                    gravityField.TransformVector(offset).magnitude;
+
+                if (distance < blackHoleDetectionRadius)
+                {
+                    fellIntoBlackHole = true;
+                    break;
+                }
+            }
+        }
+
+        if (fellIntoBlackHole)
+        {
+            if (gameAudio != null)
+                gameAudio.PlayBlackHole();
+
+            float delay =
+                gameAudio != null &&
+                gameAudio.blackHole != null
+                    ? gameAudio.blackHole.length *
+                      blackHoleSoundDelayMultiplier
+                    : 0f;
+
+            StartCoroutine(
+                ShowGameOverAfterDelay(delay, true)
+            );
+        }
+        else
+        {
+            if (gameAudio != null)
+                gameAudio.PlayLose();
+
+            showGameOver = true;
+        }
+
+        Debug.Log(
+            fellIntoBlackHole
+                ? "GAME OVER: Earth entered a black hole!"
+                : "GAME OVER: Earth fell off the field!"
+        );
     }
 
-    // Called when Earth enters the Sun.
-    // We wait until the absorption animation is finished
-    // before displaying the victory screen.
+    private IEnumerator ShowGameOverAfterDelay(
+        float delay,
+        bool playLoseSound)
+    {
+        if (delay > 0f)
+            yield return new WaitForSecondsRealtime(delay);
+
+        if (playLoseSound && gameAudio != null)
+            gameAudio.PlayLose();
+
+        showGameOver = true;
+    }
+
     public void BeginVictorySequence()
     {
         if (gameOver || levelComplete)
@@ -76,7 +164,6 @@ public class GameManager3D : MonoBehaviour
             fieldController.enabled = false;
     }
 
-    // Called after Earth finishes being absorbed.
     public void CompleteVictory()
     {
         if (gameOver || levelComplete)
@@ -85,18 +172,49 @@ public class GameManager3D : MonoBehaviour
         victorySequenceStarted = true;
         levelComplete = true;
 
+        VictoryCamera3D victoryCamera = null;
+
+        if (Camera.main != null)
+            victoryCamera =
+                Camera.main.GetComponent<VictoryCamera3D>();
+
+        StartCoroutine(
+            ShowVictoryAfterCamera(victoryCamera)
+        );
+
         Debug.Log("LEVEL COMPLETE!");
+    }
+
+    private IEnumerator ShowVictoryAfterCamera(
+        VictoryCamera3D victoryCamera)
+    {
+        if (victoryCamera != null)
+        {
+            float duration =
+                Mathf.Max(0f, victoryCamera.zoomDuration) + 0.1f;
+
+            yield return new WaitForSecondsRealtime(duration);
+        }
+
+        showVictory = true;
     }
 
     public void RestartLevel()
     {
+        if (transitioning)
+            return;
+
         Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.name);
+
+        StartCoroutine(
+            LoadSceneWithClick(currentScene.name)
+        );
     }
 
     public void LoadNextLevel()
     {
-        if (!levelComplete ||
+        if (transitioning ||
+            !levelComplete ||
             string.IsNullOrWhiteSpace(nextSceneName))
             return;
 
@@ -109,7 +227,43 @@ public class GameManager3D : MonoBehaviour
             return;
         }
 
-        SceneManager.LoadScene(nextSceneName);
+        StartCoroutine(
+            LoadSceneWithClick(nextSceneName)
+        );
+    }
+
+    private IEnumerator LoadSceneWithClick(string sceneName)
+    {
+        transitioning = true;
+
+        if (gameAudio != null && gameAudio.button != null)
+        {
+            // Let the click sound survive the scene transition.
+            GameObject soundObject =
+                new GameObject("Button Click Sound");
+
+            DontDestroyOnLoad(soundObject);
+
+            AudioSource source =
+                soundObject.AddComponent<AudioSource>();
+
+            source.playOnAwake = false;
+            source.spatialBlend = 0f;
+            source.volume = gameAudio.masterVolume;
+
+            source.PlayOneShot(gameAudio.button);
+
+            // Clean up automatically after playback finishes.
+            Destroy(
+                soundObject,
+                gameAudio.button.length + 0.1f
+            );
+        }
+
+        // Scene changes immediately; no audio delay.
+        SceneManager.LoadScene(sceneName);
+
+        yield break;
     }
 
     private void InitializeStyles()
@@ -142,7 +296,7 @@ public class GameManager3D : MonoBehaviour
 
     private void OnGUI()
     {
-        if (!gameOver && !levelComplete)
+        if (!showGameOver && !showVictory)
             return;
 
         InitializeStyles();
@@ -151,7 +305,7 @@ public class GameManager3D : MonoBehaviour
             !string.IsNullOrWhiteSpace(nextSceneName);
 
         float width = Mathf.Min(340f, Screen.width - 30f);
-        float height = levelComplete ? 310f : 200f;
+        float height = showVictory ? 310f : 200f;
 
         Rect panel = new Rect(
             (Screen.width - width) * 0.5f,
@@ -162,7 +316,7 @@ public class GameManager3D : MonoBehaviour
 
         GUI.Box(panel, "");
 
-        if (gameOver)
+        if (showGameOver)
         {
             GUI.Label(
                 new Rect(panel.x, panel.y + 25f, width, 55f),
@@ -205,11 +359,12 @@ public class GameManager3D : MonoBehaviour
             ? satelliteCollector.TotalCount
             : 3;
 
-        // Up to three illuminated stars.
         float starSize = 52f;
         float spacing = 10f;
         float starsWidth = 3f * starSize + 2f * spacing;
-        float startX = panel.x + (width - starsWidth) / 2f;
+
+        float startX =
+            panel.x + (width - starsWidth) / 2f;
 
         for (int i = 0; i < 3; i++)
         {
@@ -232,7 +387,12 @@ public class GameManager3D : MonoBehaviour
         }
 
         GUI.Label(
-            new Rect(panel.x, panel.y + 135f, width, 28f),
+            new Rect(
+                panel.x,
+                panel.y + 135f,
+                width,
+                28f
+            ),
             "SATELLITES RECOVERED: " +
             collected + "/" + total,
             textStyle
@@ -255,7 +415,8 @@ public class GameManager3D : MonoBehaviour
             }
         }
 
-        float restartY = hasNextLevel ? 242f : 200f;
+        float restartY =
+            hasNextLevel ? 242f : 200f;
 
         if (GUI.Button(
             new Rect(

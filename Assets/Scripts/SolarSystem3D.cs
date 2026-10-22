@@ -183,8 +183,15 @@ public class SolarSystem3D : MonoBehaviour
         GameManager3D gameManager =
             FindFirstObjectByType<GameManager3D>();
 
+        GameAudio3D audio = gameManager != null
+            ? gameManager.GetComponent<GameAudio3D>()
+            : null;
+
         if (gameManager != null)
             gameManager.BeginVictorySequence();
+
+        if (audio != null)
+            audio.PlaySolarSuction();
 
         if (fieldController != null)
             fieldController.enabled = false;
@@ -295,6 +302,9 @@ public class SolarSystem3D : MonoBehaviour
 
         if (gameManager != null)
             gameManager.CompleteVictory();
+
+        if (audio != null)
+            audio.PlayWin();
 
         Debug.Log("YOU WIN! Earth was absorbed by the Sun.");
     }
