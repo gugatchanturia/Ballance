@@ -105,6 +105,18 @@ public class SatellitePickup : MonoBehaviour
         Material antennaMaterial = CreateMaterial(
             new Color(0.95f, 0.75f, 0.30f)
         );
+        // Make the satellite visible against the glowing grid.
+        panelMaterial.EnableKeyword("_EMISSION");
+        panelMaterial.SetColor(
+            "_EmissionColor",
+            new Color(0.1f, 0.5f, 1f) * 2.5f
+        );
+
+        antennaMaterial.EnableKeyword("_EMISSION");
+        antennaMaterial.SetColor(
+            "_EmissionColor",
+            new Color(1f, 0.75f, 0.2f) * 2f
+        );
 
         // Main silver satellite body.
         CreatePart(

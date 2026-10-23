@@ -16,6 +16,9 @@ public class BlackHoleAccretion : MonoBehaviour
     public Color hotColor = new Color(1f, 0.88f, 0.42f);
     public Color warmColor = new Color(1f, 0.43f, 0.08f);
     public Color dimColor = new Color(0.55f, 0.12f, 0.025f);
+    [Header("Visual Intensity")]
+    [Range(0f, 1f)]
+    public float glowIntensity = 0.25f;
 
     [Header("Animation")]
     public float orbitSpeed = 1f;
@@ -109,7 +112,7 @@ public class BlackHoleAccretion : MonoBehaviour
             innerRadius + width * 0.24f,
             warmColor,
             hotColor,
-            0.95f,
+            0.95f * glowIntensity,
             0
         );
 
@@ -120,7 +123,7 @@ public class BlackHoleAccretion : MonoBehaviour
             innerRadius + width * 0.73f,
             dimColor,
             warmColor,
-            0.78f,
+            0.78f * glowIntensity,
             1
         );
 
@@ -131,7 +134,7 @@ public class BlackHoleAccretion : MonoBehaviour
             innerRadius + width,
             dimColor,
             warmColor,
-            0.30f,
+            0.30f * glowIntensity,
             2
         );
     }

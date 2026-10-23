@@ -250,7 +250,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 369450608}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f009ecde245aa04886dd7a9ebc9985e, type: 3}
   m_Name: 
@@ -261,6 +261,7 @@ MonoBehaviour:
   hotColor: {r: 1, g: 0.88, b: 0.42, a: 1}
   warmColor: {r: 1, g: 0.43, b: 0.08, a: 1}
   dimColor: {r: 0.55, g: 0.12, b: 0.025, a: 1}
+  glowIntensity: 0.25
   orbitSpeed: 1
   angularSegments: 128
   radialSegments: 8
@@ -413,7 +414,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496974453}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f009ecde245aa04886dd7a9ebc9985e, type: 3}
   m_Name: 
@@ -424,6 +425,7 @@ MonoBehaviour:
   hotColor: {r: 1, g: 0.88, b: 0.42, a: 1}
   warmColor: {r: 1, g: 0.43, b: 0.08, a: 1}
   dimColor: {r: 0.55, g: 0.12, b: 0.025, a: 1}
+  glowIntensity: 0.25
   orbitSpeed: 1
   angularSegments: 128
   radialSegments: 8
@@ -667,7 +669,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 582893755}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f009ecde245aa04886dd7a9ebc9985e, type: 3}
   m_Name: 
@@ -678,6 +680,7 @@ MonoBehaviour:
   hotColor: {r: 1, g: 0.88, b: 0.42, a: 1}
   warmColor: {r: 1, g: 0.43, b: 0.08, a: 1}
   dimColor: {r: 0.55, g: 0.12, b: 0.025, a: 1}
+  glowIntensity: 0.25
   orbitSpeed: 1
   angularSegments: 128
   radialSegments: 8
@@ -1537,7 +1540,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1531833398}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f009ecde245aa04886dd7a9ebc9985e, type: 3}
   m_Name: 
@@ -1548,6 +1551,7 @@ MonoBehaviour:
   hotColor: {r: 1, g: 0.88, b: 0.42, a: 1}
   warmColor: {r: 1, g: 0.43, b: 0.08, a: 1}
   dimColor: {r: 0.55, g: 0.12, b: 0.025, a: 1}
+  glowIntensity: 0.25
   orbitSpeed: 1
   angularSegments: 128
   radialSegments: 8
@@ -1672,6 +1676,8 @@ GameObject:
   - component: {fileID: 1651355786}
   - component: {fileID: 1651355785}
   - component: {fileID: 1651355787}
+  - component: {fileID: 1651355789}
+  - component: {fileID: 1651355788}
   m_Layer: 0
   m_Name: GravityGrid
   m_TagString: Untagged
@@ -1720,6 +1726,15 @@ MonoBehaviour:
   height: 0.13
   lineWidth: 0.02
   surfaceColor: {r: 0.105882354, g: 0.16078432, b: 0.26666668, a: 1}
+  useGravityColors: 1
+  flatColor: {r: 0.21568628, g: 0.7647059, b: 0.6666667, a: 1}
+  shallowColor: {r: 0.5647059, g: 0.8235294, b: 0.4117647, a: 1}
+  mediumColor: {r: 0.9411765, g: 0.81960785, b: 0.3372549, a: 1}
+  deepColor: {r: 1, g: 0.5176471, b: 0.21568628, a: 1}
+  dangerColor: {r: 0.8627451, g: 0.21568628, b: 0.29411766, a: 1}
+  mediumDepth: 0.45
+  deepDepth: 0.9
+  dangerDepth: 1.5
   lineColor: {r: 0.72156864, g: 0.54509807, b: 0.3137255, a: 1}
 --- !u!23 &1651355785
 MeshRenderer:
@@ -1793,6 +1808,53 @@ MonoBehaviour:
   blackHole: {fileID: 582893757}
   flatFieldCollider: {fileID: 497122498}
   openingRadius: 0.7
+--- !u!114 &1651355788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651355782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36e92f81248129446afc15a5e5c53a26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlackHoleHorizon
+  mouthRadius: 0.76
+  surfaceOffset: 0.075
+  darknessColor: {r: 0.015, g: 0.025, b: 0.055, a: 1}
+  rimWidth: 0.035
+  rimColor: {r: 0.72, g: 0.2, b: 0.24, a: 1}
+  highlightColor: {r: 1, g: 0.65, b: 0.3, a: 1}
+  highlightWidth: 0.055
+  highlightSpeed: 35
+  highlightArc: 24
+--- !u!114 &1651355789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651355782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 945affd418abc5b49bd74550e1b165f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlackHolePhotonFlow
+  backgroundPhotons: 24
+  photonsPerHole: 26
+  backgroundSpeed: 1.1
+  attractionRadius: 2.5
+  streamStartRadius: 2.3
+  eventHorizonRadius: 0.72
+  absorptionSeconds: 1.8
+  spiralRevolutions: 0.65
+  photonWidth: 0.075
+  photonLength: 0.22
+  heightAboveGrid: 0.12
+  backgroundColor: {r: 0.45, g: 1, b: 1, a: 1}
+  outerFlowColor: {r: 1, g: 0.92, b: 0.52, a: 1}
+  innerFlowColor: {r: 1, g: 0.38, b: 0.2, a: 1}
 --- !u!1 &1824366588
 GameObject:
   m_ObjectHideFlags: 0
@@ -1927,7 +1989,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1838771773}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f009ecde245aa04886dd7a9ebc9985e, type: 3}
   m_Name: 
@@ -1938,6 +2000,7 @@ MonoBehaviour:
   hotColor: {r: 1, g: 0.88, b: 0.42, a: 1}
   warmColor: {r: 1, g: 0.43, b: 0.08, a: 1}
   dimColor: {r: 0.55, g: 0.12, b: 0.025, a: 1}
+  glowIntensity: 0.25
   orbitSpeed: 1
   angularSegments: 128
   radialSegments: 8
@@ -2278,7 +2341,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2042291870}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f009ecde245aa04886dd7a9ebc9985e, type: 3}
   m_Name: 
@@ -2289,6 +2352,7 @@ MonoBehaviour:
   hotColor: {r: 1, g: 0.88, b: 0.42, a: 1}
   warmColor: {r: 1, g: 0.43, b: 0.08, a: 1}
   dimColor: {r: 0.55, g: 0.12, b: 0.025, a: 1}
+  glowIntensity: 0.25
   orbitSpeed: 1
   angularSegments: 128
   radialSegments: 8
@@ -2351,7 +2415,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2078893090}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f009ecde245aa04886dd7a9ebc9985e, type: 3}
   m_Name: 
@@ -2362,6 +2426,7 @@ MonoBehaviour:
   hotColor: {r: 1, g: 0.88, b: 0.42, a: 1}
   warmColor: {r: 1, g: 0.43, b: 0.08, a: 1}
   dimColor: {r: 0.55, g: 0.12, b: 0.025, a: 1}
+  glowIntensity: 0.25
   orbitSpeed: 1
   angularSegments: 128
   radialSegments: 8
